@@ -10,6 +10,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(rateLimiter);
+
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', message: 'API is ready and running.' });
+});
+
 app.use('/api/reviews', reviewsRouter);
 app.use(errorHandler);
 

@@ -19,4 +19,15 @@ router.post(
   csvUploadHandler
 );
 
+// File size error handler
+router.use((err, req, res, next) => {
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(400).json({
+      status: 'error',
+      message: 'Ukuran file melebihi batas maksimal 32MB.',
+    });
+  }
+  next(err);
+});
+
 export default router;
