@@ -8,6 +8,7 @@ import {
   googlePlayScraper,
   csvUploadHandler,
 } from '../controllers/reviewsController.js';
+import { generateSummary } from '../controllers/summaryController.js';
 
 const router = express.Router();
 
@@ -18,6 +19,7 @@ router.post(
   csvUploadValidator,
   csvUploadHandler
 );
+router.post('/generate-summary', generateSummary);
 
 // File size error handler
 router.use((err, req, res, next) => {

@@ -5,7 +5,9 @@ export const googlePlayValidator = [
     .notEmpty()
     .withMessage('Kolom appId wajib diisi.')
     .matches(/^[a-z][a-z0-9_]*(\.[a-z0-9_]+)+[0-9a-z_]$/i)
-    .withMessage('Format appId tidak valid. Contoh: com.example.app'),
+    .withMessage(
+      'Format appId tidak valid. Contoh: com.example atau com.example.app'
+    ),
   body('sort')
     .notEmpty()
     .withMessage('Kolom sort wajib diisi.')
