@@ -1,22 +1,26 @@
-# Quicktify Scraper API
+# QUICKTIFY SCRAPER AND SUMMARIZE API Documentation
 
-API ini menyediakan dua layanan utama:
+API ini menyediakan layanan:
 
 - Scrape review aplikasi dari Google Play Store
 - Upload dan proses file CSV berisi review
+- Generate ringkasan analisis review (AI)
+- Generate ringkasan analisis prediksi rating (AI)
 
 ---
 
-## Daftar Endpoint
+## Daftar Endpoint Terbaru
 
 ### 1. Cek Status API
 
-- **GET /**
-- **Deskripsi:** Mengecek apakah API siap digunakan.
-- **Response:**
-  ```json
-  { "status": "ok", "message": "API is ready and running." }
-  ```
+- **GET /**  
+  Mengecek apakah API siap digunakan.
+  - **Response:**
+    ```json
+    { "status": "ok", "message": "API is ready and running." }
+    ```
+
+---
 
 ### 2. Scrape Review Google Play
 
@@ -44,6 +48,8 @@ API ini menyediakan dua layanan utama:
     "message": "Tipe sort tidak valid. Pilih salah satu: NEWEST, RATING, atau HELPFULNESS."
   }
   ```
+
+---
 
 ### 3. Upload & Proses File CSV Review
 
@@ -77,11 +83,68 @@ API ini menyediakan dua layanan utama:
 
 ---
 
+### 4. Generate Summary Analisis Review (AI)
+
+- **POST /api/reviews/generate-summary**
+- **Body (JSON):**
+  ```json
+  {
+    "data": {
+      // Struktur data hasil analisis review (top_words, emosi, sentimen, spam, dsb)
+    }
+  }
+  ```
+- **Response (200):**
+  ```json
+  {
+    "status": "success",
+    "summary": "Ringkasan analisis review dalam format markdown."
+  }
+  ```
+- **Error (400/500):**
+  ```json
+  {
+    "status": "error",
+    "message": "Missing data for prompt." // atau error lain dari AI
+  }
+  ```
+
+---
+
+### 5. Generate Prediction Summary (AI)
+
+- **POST /api/rating-estimation/summary**
+- **Body (JSON):**
+  ```json
+  {
+    "data": {
+      // Struktur data hasil prediksi rating, feature importance, SHAP, dsb
+    }
+  }
+  ```
+- **Response (200):**
+  ```json
+  {
+    "status": "success",
+    "summary": "Ringkasan analisis prediksi rating dalam format markdown."
+  }
+  ```
+- **Error (400/500):**
+  ```json
+  {
+    "status": "error",
+    "message": "Missing data for prediction summary." // atau error lain dari AI
+  }
+  ```
+
+---
+
 ## Batasan
 
-- **Ukuran file upload maksimal 32MB** (batas Cloud Run & Multer).
+- Ukuran file upload maksimal 32MB (batas Cloud Run & Multer).
 - File CSV harus memiliki kolom `review` atau `ulasan`.
 - Untuk file besar, disarankan parsing di client lalu kirim data hasil parsing ke server.
+- Semua endpoint AI membutuhkan struktur data yang sesuai dengan analisis yang diharapkan.
 
 ---
 
@@ -98,6 +161,22 @@ curl -X POST http://localhost:PORT/api/reviews/google-play-csv \
 curl -X POST http://localhost:PORT/api/reviews/google-play-scraper \
   -H "Content-Type: application/json" \
   -d '{"appId":"com.example.app","sort":"NEWEST","num":10}'
+```
+
+## Contoh Request: Generate Summary Analisis Review (AI)
+
+```bash
+curl -X POST http://localhost:PORT/api/reviews/generate-summary \
+  -H "Content-Type: application/json" \
+  -d '{"data":{...}}'
+```
+
+## Contoh Request: Generate Prediction Summary (AI)
+
+```bash
+curl -X POST http://localhost:PORT/api/rating-estimation/summary \
+  -H "Content-Type: application/json" \
+  -d '{"data":{...}}'
 ```
 
 ---
